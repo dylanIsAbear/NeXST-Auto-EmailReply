@@ -2,16 +2,29 @@ import javax.mail.*;
 import java.io.*;
 import java.util.*;
 public class MailReader {
-
-	public static void main(String args[] ) {
+		/*Reader class is for reading a mail and offers the getter method 
+		 * for other classes for further information and analyze */
+		private String pop3 = "pop.126.com";
+		private String protocol = "pop3";
+		private String username = "liyuanhao2000@126.com";
+		private String password = "Gooduw2018";
+		private OutputStream os = null;
+		private byte[] byt;
+		private String subject;
+		private Address[] addr;
 		
-		String pop3 = "pop.126.com";
-		String protocol = "pop3";
-		String username = "liyuanhao2000@126.com";
-		String password = "Gooduw2018";
-		OutputStream os = null;
-		byte[] byt;
-		
+		public boolean setAccout(String pop, String protocol, String username,
+				 String password)
+		{
+			boolean bo = true;
+			this.pop3 = pop;
+			this.protocol = protocol;
+			this.username = username;
+			this.password = password;
+			return bo;
+		}
+		private Message[] get() {
+			
 		Properties props = new Properties();
 		props.setProperty("mail.transport.protocol", protocol);
 		props.setProperty("mail.smtp.host", pop3);
@@ -29,7 +42,7 @@ public class MailReader {
 			
 			Message[] message = folder.getMessages();
 			
-			for(Message mes : message) {
+		/*	for(Message mes : message) {
 				File file = new File("/Users/lewislee/Desktop/mail/" + mes.getSubject() + ".txt");
 				os = new FileOutputStream(file);
 				String subject = mes.getSubject();
@@ -38,13 +51,44 @@ public class MailReader {
 				os.write(byt);
 				mes.writeTo(os);
 				System.out.println("邮件 : " + file.getName() + " 已被成功生成！!");
-			}
+			} */
 			folder.close(false);
 			store.close();
+			return message;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	}
+		return null;
 	
+		}
+		
+		public String getSubject(Message[] mes, int index) throws MessagingException  {
+			if((subject = mes[index].getSubject() )!= null && (subject.length() >= 1))
+				return subject;
+			else
+				throw new MessagingException();
+		}
+		
+		public Address[] getFrom(Message[] mes, int index) throws MessagingException {
+			addr = mes[index].getFrom();
+				if(addr[0] != null)
+					return addr;
+				else
+					throw new MessagingException();
+		}
+		
+		public String getMesContentType(Message[] mes, int index) throws MessagingException {
+			String type = mes[index].getContentType();
+			if(type != null)
+				return type;
+			else
+				throw new MessagingException();
+		}
+		
+		public Object getMesContent(Message mes[], int index) throws MessagingException, IOException{
+			return mes[index].getContent();
+		}
+		
+		
 }
+
