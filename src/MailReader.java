@@ -5,62 +5,24 @@ import MesException.*;
 public class MailReader {
 		/*Reader class is for reading a mail and offers the getter method 
 		 * for other classes for further information and analyze */
-		private String pop3 = "pop.126.com";
-		private String protocol = "pop3";
-		private String username = "liyuanhao2000@126.com";
-		private String password = "Gooduw2018";
-		private OutputStream os = null;
-		private byte[] byt;
+	
+		/*并提供获取信息的接口
+		 * */
 		private String subject;
 		private Address[] addr;
+		private Message[] mes;
+		private Folder folder;
+
+		/* MUST setup setAccount method before using the class */
 		
-		public boolean setAccout(String pop, String protocol, String username,
-				 String password)
-		{
-			boolean bo = true;
-			this.pop3 = pop;
-			this.protocol = protocol;
-			this.username = username;
-			this.password = password;
-			return bo;
+		/* One Reader for one INBOX*/
+		public MailReader(Folder folder) {
+			this.folder = folder;
 		}
-		private Message[] get() {
-			
-		Properties props = new Properties();
-		props.setProperty("mail.transport.protocol", protocol);
-		props.setProperty("mail.smtp.host", pop3);
 		
-		Session session = Session.getDefaultInstance(props);
-		session.setDebug(false);
-		
-		try {
-			
-			Store store = session.getStore(protocol);
-			store.connect(pop3, username, password);
-			
-			Folder folder = store.getFolder("INBOX");
-			folder.open(Folder.READ_WRITE);
-			
-			Message[] message = folder.getMessages();
-			
-		/*	for(Message mes : message) {
-				File file = new File("/Users/lewislee/Desktop/mail/" + mes.getSubject() + ".txt");
-				os = new FileOutputStream(file);
-				String subject = mes.getSubject();
-				Address from = (Address) mes.getFrom()[0];
-				byt = ("Subject : " + subject + " from : " + from.toString() + "\n").getBytes();
-				os.write(byt);
-				mes.writeTo(os);
-				System.out.println("邮件 : " + file.getName() + " 已被成功生成！!");
-			} */
-			folder.close(false);
-			store.close();
-			return message;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	
+		public Message[] getMailMessage() throws MessagingException {
+			mes = folder.getMessages();
+			return mes;
 		}
 		
 		public String getSubject(Message[] mes, int index) throws MessagingException  {
@@ -90,6 +52,21 @@ public class MailReader {
 			return mes[index].getContent();
 		}
 		
+		public int getTotalCount() throws MessagingException {
+			return folder.getMessageCount();
+		}
+		
+		public int getUnreadCount() throws MessagingException{
+			return folder.getUnreadMessageCount();
+		}
+		
+		public int getNewCount() throws MessagingException {
+			return folder.getNewMessageCount();
+		}
+		
+		public int getDeletedCount() throws MessagingException {
+			return folder.getDeletedMessageCount(); 
+		}
 		
 }
 
