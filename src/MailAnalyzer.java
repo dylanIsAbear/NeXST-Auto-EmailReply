@@ -1,33 +1,49 @@
 import java.util.*;
 import javax.mail.*;
+import javax.mail.internet.MimeMessage;
 
+import MesException.*;
 
 public class MailAnalyzer {
-
-public static final String protocol = "pop3";
-public static final String pop3 = "pop.126.com";
-
-	public static Folder getFolder(String host, String username, String password) {
-		
-		Properties props = new Properties();
-		props.setProperty("mail.transport.protocol", protocol);
-		props.setProperty("mail.smtp.host", pop3);
-		
-		Session session = Session.getDefaultInstance(props, null);
-		session.setDebug(true);
-		
+	
+	private String contentType;
+	private Message mail;
+	private eMail email;
+	
+	/* One Analyzer for each mail*/
+	public MailAnalyzer(Message mail) {
+		this.mail = mail;
+		email = new eMail();
 		try {
-			
-			Store store = session.getStore(protocol);
-			store.connect(host, username, password);
-			Folder folder = store.getFolder("inbox");
-			folder.open(Folder.READ_WRITE);
-			return folder;
-			
-		}catch(Exception e) {
+			doAnalyze();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 	}
 	
+	private void doAnalyze() throws MessagingException {
+		
+		contentType = mail.getContentType();
+		
+		if(contentType == "multipart/*")
+			doMultiAnalyze(mail);
+		else
+			doDefaultAnalyze(mail);
+	}
+	
+	private void doMultiAnalyze(Message msg) {
+		
+	}
+	
+	private void doDefaultAnalyze(Message mes) {
+		
+	}
+	
+	
+	public eMail getMail() {
+		return email;
+	}
+	
+
 }

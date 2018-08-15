@@ -1,6 +1,7 @@
 import javax.mail.*;
 import java.io.*;
 import java.util.*;
+import MesException.*;
 public class MailReader {
 		/*Reader class is for reading a mail and offers the getter method 
 		 * for other classes for further information and analyze */
@@ -66,7 +67,7 @@ public class MailReader {
 			if((subject = mes[index].getSubject() )!= null && (subject.length() >= 1))
 				return subject;
 			else
-				throw new MessagingException();
+				throw new NullSubjectException();
 		}
 		
 		public Address[] getFrom(Message[] mes, int index) throws MessagingException {
@@ -74,7 +75,7 @@ public class MailReader {
 				if(addr[0] != null)
 					return addr;
 				else
-					throw new MessagingException();
+					throw new NullAddressException();
 		}
 		
 		public String getMesContentType(Message[] mes, int index) throws MessagingException {
@@ -82,7 +83,7 @@ public class MailReader {
 			if(type != null)
 				return type;
 			else
-				throw new MessagingException();
+				throw new NullTypeException();
 		}
 		
 		public Object getMesContent(Message mes[], int index) throws MessagingException, IOException{
