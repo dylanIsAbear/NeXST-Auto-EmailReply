@@ -135,7 +135,7 @@ public class eMail {
 		if(!file.exists())
 			file.createNewFile();
 		
-		os = new FileOutputStream(file);
+		OutputStream outputStream = os = new FileOutputStream(file);
 		String temp;
 		
 		temp = "From : " + getFrom() + "\n\n\n";
